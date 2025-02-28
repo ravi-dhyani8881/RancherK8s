@@ -33,15 +33,33 @@ jobs:
           echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config  # Secure permissions
 
-          # ✅ Print kubeconfig file for debugging (DO NOT do this in production)
-          echo "Kubeconfig Contents:"
+          # ✅ Set KUBECONFIG explicitly
+          export KUBECONFIG=$HOME/.kube/config
+
+          # ✅ Print Kubeconfig content for debugging (Remove this in production)
+          echo "🔍 Debug: Kubeconfig File Contents:"
           cat $HOME/.kube/config
+
+          # ✅ Show available contexts
+          echo "🔍 Debug: Available Kubernetes Contexts:"
+          kubectl config get-contexts
+
+          # ✅ Show current context
+          echo "🔍 Debug: Current Context:"
+          kubectl config current-context
+
         env:
           KUBECONFIG: $HOME/.kube/config
 
       - name: 🚀 Verify Kubernetes Connection
         run: |
+          export KUBECONFIG=$HOME/.kube/config  # Ensure Kubeconfig is set
+          
+          echo "🔍 Debug: Checking Cluster Info..."
           kubectl cluster-info
+
+          echo "🔍 Debug: Checking Nodes..."
           kubectl get nodes
 
-
+          echo "🔍 Debug: Checking Namespaces..."
+          kubectl get ns
