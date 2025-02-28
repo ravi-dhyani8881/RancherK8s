@@ -11,3 +11,6 @@ docker run -d --restart=unless-stopped \
   --privileged \
   rancher/rancher:latest
   
+
+If Rancher not run after restart codespace 
+sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
