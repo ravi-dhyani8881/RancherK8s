@@ -29,10 +29,12 @@ jobs:
 
       - name: 🔑 Configure Kubeconfig
         run: |
+          mkdir -p $HOME/.kube  # ✅ Ensure .kube directory exists
           echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config  # Secure permissions
         env:
           KUBECONFIG: $HOME/.kube/config
+
 
       - name: 🚀 Verify Kubernetes Connection
         run: |
