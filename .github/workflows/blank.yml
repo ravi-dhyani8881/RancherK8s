@@ -51,6 +51,17 @@ jobs:
         env:
           KUBECONFIG: $HOME/.kube/config
 
+      - name: 🔑 Configure Kubeconfig with CA Cert
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+          # ✅ Add CA Certificate
+          echo "${{ secrets.K8S_CA_CERT }}" | base64 --decode > $HOME/.kube/ca.crt
+          kubectl config set clusters.my-cluster.certificate-authority $HOME/.kube/ca.crt
+
+
       - name: 🚀 Verify Kubernetes Connection
         run: |
           export KUBECONFIG=$HOME/.kube/config  # Ensure Kubeconfig is set
