@@ -82,7 +82,7 @@ jobs:
         env:
           KUBECONFIG: $HOME/.kube/config
 
-      - name: ⚠️ Temporary Fix: Disable TLS Verification (Only if previous step fails)
+      - name: ⚠️ Temporary Fix
         if: failure()
         run: |
           export KUBECONFIG=$HOME/.kube/config
