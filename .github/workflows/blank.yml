@@ -36,7 +36,6 @@ jobs:
           # ✅ Print kubeconfig file for debugging (DO NOT do this in production)
           echo "Kubeconfig Contents:"
           cat $HOME/.kube/config
-
         env:
           KUBECONFIG: $HOME/.kube/config
 
@@ -44,3 +43,4 @@ jobs:
         run: |
           kubectl cluster-info
           kubectl get nodes
+
