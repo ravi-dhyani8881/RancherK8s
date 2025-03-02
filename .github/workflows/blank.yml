@@ -2,15 +2,11 @@
 
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -50,15 +46,11 @@ jobs:
         env:
           KUBECONFIG: $HOME/.kube/config
 
-      - name: 🔑 Configure CA Certificate (if available)
+      - name: ⚠️ Disable TLS Verification for Local Cluster
         run: |
-          if [[ -n "${{ secrets.K8S_CA_CERT }}" ]]; then
-            echo "✅ Found CA Certificate, applying to kubeconfig..."
-            echo "${{ secrets.K8S_CA_CERT }}" | base64 --decode > $HOME/.kube/ca.crt
-            kubectl config set clusters.my-cluster.certificate-authority $HOME/.kube/ca.crt
-          else
-            echo "⚠️ No CA certificate found in secrets. Using default kubeconfig settings."
-          fi
+          export KUBECONFIG=$HOME/.kube/config
+          echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
+          kubectl config set-cluster local --insecure-skip-tls-verify=true
 
         env:
           KUBECONFIG: $HOME/.kube/config
@@ -78,21 +70,6 @@ jobs:
           # ✅ Debug: Check Namespaces
           echo "🔍 Debug: Checking Namespaces..."
           kubectl get ns || echo "❌ Failed to fetch namespaces"
-
-        env:
-          KUBECONFIG: $HOME/.kube/config
-
-      - name: ⚠️ Temporary Fix
-        if: failure()
-        run: |
-          export KUBECONFIG=$HOME/.kube/config
-          echo "⚠️ Enabling --insecure-skip-tls-verify due to certificate issues."
-          kubectl config set-cluster my-cluster --insecure-skip-tls-verify=true
-
-          # ✅ Re-run cluster check
-          kubectl cluster-info
-          kubectl get nodes
-          kubectl get ns
 
         env:
           KUBECONFIG: $HOME/.kube/config
