@@ -1,1 +1,76 @@
+# This is a basic workflow to help you get started with Actions
 
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  repository_dispatch:
+    types: [RancherK8s]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Runs on GitHub-hosted runner
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: 🔑 Configure Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube  # Ensure .kube directory exists
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config  # Secure permissions
+          
+          export KUBECONFIG=$HOME/.kube/config  # Explicitly set kubeconfig
+
+          # ✅ Debug: Print Kubeconfig Contents
+          echo "🔍 Debug: Kubeconfig File Contents:"
+          cat $HOME/.kube/config
+
+          # ✅ Debug: Show available contexts
+          echo "🔍 Debug: Available Kubernetes Contexts:"
+          kubectl config get-contexts
+
+          # ✅ Debug: Show current context
+          echo "🔍 Debug: Current Context:"
+          kubectl config current-context
+
+        env:
+          KUBECONFIG: $HOME/.kube/config
+
+      - name: ⚠️ Disable TLS Verification for Local Cluster
+        run: |
+          export KUBECONFIG=$HOME/.kube/config
+          echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
+          kubectl config set-cluster local --insecure-skip-tls-verify=true
+
+        env:
+          KUBECONFIG: $HOME/.kube/config
+
+      - name: 🚀 Verify Kubernetes Connection
+        run: |
+          export KUBECONFIG=$HOME/.kube/config
+
+          # ✅ Debug: Check Cluster Info
+          echo "🔍 Debug: Checking Cluster Info..."
+          kubectl cluster-info || echo "❌ Failed to fetch cluster info"
+
+          # ✅ Debug: Check Nodes
+          echo "🔍 Debug: Checking Nodes..."
+          kubectl get nodes || echo "❌ Failed to fetch nodes"
+
+          # ✅ Debug: Check Namespaces
+          echo "🔍 Debug: Checking Namespaces..."
+          kubectl get ns || echo "❌ Failed to fetch namespaces"
+
+        env:
+          KUBECONFIG: $HOME/.kube/config
