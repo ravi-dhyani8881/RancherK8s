@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "local"
+  cluster:
+    server: "https://fictional-doodle-w9qgrgvv9729j9p-443.app.github.dev/k8s/clusters/local"
+    certificate-authority: "$HOME/.kube/ca.crt"
+
+users:
+- name: "local"
+  user:
+    token: "kubeconfig-user-bmz6t8svr4:5zzzlf52ttz22qx7zgbh2f59x8gbdxqhqntm469tpr5x6sd64knzrh"
+
+
+contexts:
+- name: "local"
+  context:
+    user: "local"
+    cluster: "local"
+
+current-context: "local"
