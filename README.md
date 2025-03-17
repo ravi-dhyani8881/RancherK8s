@@ -49,11 +49,14 @@ contexts:
 
 current-context: "local"
 
-Step 4) Then run the bellow command 
+Step 4) Then Run 
+export KUBECONFIG=localr.yaml 
+
+ Step 5) Then run the bellow command 
 
  kubectl config set-cluster local --insecure-skip-tls-verify=true
 
-Step 5) Then use kubectl get ns
+Step 6) Then use kubectl get ns
 
 
 
