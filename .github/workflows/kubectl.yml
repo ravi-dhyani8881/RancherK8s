@@ -53,4 +53,37 @@ jobs:
 
           # ✅ Debug: Check Namespaces
           echo "🔍 Debug: Checking Namespaces..."
-          kubectl get ns || echo "❌ Failed to fetch namespaces"
+        #  kubectl get ns || echo "❌ Failed to fetch namespaces"
+
+      - name: 🔍 Log event payload to a file
+        run: echo '${{ toJson(github.event.client_payload) }}' > event_payload.json
+
+      - name: 🔍 Print JSON payload for debugging
+        run: |
+          echo "📂 Listing all files:"
+          ls -l
+          echo "📄 JSON Payload Content:"
+          cat event_payload.json
+
+      - name: Extract metadata for Docker image name
+        run: |
+          # Extract values from JSON
+          ORG_ID=$(jq -r '.organizationID' event_payload.json)
+          SUB_ORG_ID=$(jq -r '.subOrganizationID' event_payload.json)
+          ENV_ID=$(jq -r '.enviromentID' event_payload.json)
+          GRAPH_ID=$(jq -r '.graphID' event_payload.json)
+          VERSION=$(jq -r '.version' event_payload.json)
+
+          # Validate extracted values
+          if [[ -z "$ORG_ID" || -z "$SUB_ORG_ID" || -z "$ENV_ID" || -z "$GRAPH_ID" || -z "$VERSION" ]]; then
+            echo "🚨 Error: One or more required fields are missing!"
+            exit 1
+          fi
+
+          # Generate Docker Image Name
+          IMAGE_NAME="ravi8881/${ORG_ID}-${SUB_ORG_ID}-${ENV_ID}-${GRAPH_ID}:${VERSION}"
+          IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]' | tr -d ' ' | tr '/' '-')
+
+          # Log and Export Variables
+          echo "🚀 Docker Image Name: $IMAGE_NAME"
+          echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
