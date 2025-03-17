@@ -53,7 +53,7 @@ jobs:
 
           # ✅ Debug: Check Namespaces
           echo "🔍 Debug: Checking Namespaces..."
-        #  kubectl get ns || echo "❌ Failed to fetch namespaces"
+          kubectl get ns || echo "❌ Failed to fetch namespaces"
 
       - name: 🔍 Log event payload to a file
         run: echo '${{ toJson(github.event.client_payload) }}' > event_payload.json
