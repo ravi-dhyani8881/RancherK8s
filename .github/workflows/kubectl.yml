@@ -49,3 +49,8 @@ jobs:
           export KUBECONFIG=$GITHUB_WORKSPACE/config
           echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
           kubectl config set-cluster local --insecure-skip-tls-verify=true
+
+
+          # ✅ Debug: Check Namespaces
+          echo "🔍 Debug: Checking Namespaces..."
+          kubectl get ns || echo "❌ Failed to fetch namespaces"
