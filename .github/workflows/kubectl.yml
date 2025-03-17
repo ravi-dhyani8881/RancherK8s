@@ -24,6 +24,14 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
 
+      - name: 🔍 Debug - List Files and Current Directory
+        run: |
+          echo "🔍 Current Directory:"
+          pwd  # Print working directory
+
+          echo "📂 Listing all files in the repository:"
+          ls -R  # List all files recursively
+
       - name: 🔑 Configure Kubeconfig
         run: |
           mkdir -p $HOME/.kube  # Ensure .kube directory exists
