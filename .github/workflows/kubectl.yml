@@ -44,41 +44,8 @@ jobs:
           echo "🔍 Debug: Kubeconfig File Contents:"
           cat $GITHUB_WORKSPACE/config
 
-          # ✅ Debug: Show available contexts
-          echo "🔍 Debug: Available Kubernetes Contexts:"
-          kubectl config get-contexts
-
-          # ✅ Debug: Show current context
-          echo "🔍 Debug: Current Context:"
-          kubectl config current-context
-
-        env:
-          KUBECONFIG: $GITHUB_WORKSPACE/config
-
       - name: ⚠️ Disable TLS Verification for Local Cluster
         run: |
           export KUBECONFIG=$GITHUB_WORKSPACE/config
           echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
           kubectl config set-cluster local --insecure-skip-tls-verify=true
-
-        env:
-          KUBECONFIG: $GITHUB_WORKSPACE/config
-
-      - name: 🚀 Verify Kubernetes Connection
-        run: |
-          export KUBECONFIG=$GITHUB_WORKSPACE/config
-
-          # ✅ Debug: Check Cluster Info
-          echo "🔍 Debug: Checking Cluster Info..."
-          kubectl cluster-info || echo "❌ Failed to fetch cluster info"
-
-          # ✅ Debug: Check Nodes
-          echo "🔍 Debug: Checking Nodes..."
-          kubectl get nodes || echo "❌ Failed to fetch nodes"
-
-          # ✅ Debug: Check Namespaces
-          echo "🔍 Debug: Checking Namespaces..."
-          kubectl get ns || echo "❌ Failed to fetch namespaces"
-
-        env:
-          KUBECONFIG: $GITHUB_WORKSPACE/config
