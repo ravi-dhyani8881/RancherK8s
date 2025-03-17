@@ -18,9 +18,11 @@ If Rancher not run after restart codespace
 sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
 
 
-1) Download the kubeconfig file 
+1) Download the kubeconfig file
 
-2) Then run bellow command 
+2) export KUBECONFIG=ravi.yaml 
+
+3) Then run bellow command 
 
 kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 --decode > ca.crt
 
