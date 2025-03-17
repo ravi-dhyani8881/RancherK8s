@@ -27,7 +27,7 @@ jobs:
       - name: 🔑 Configure Kubeconfig
         run: |
           mkdir -p $HOME/.kube  # Ensure .kube directory exists
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > $HOME/.kube/ca.crt
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" > $HOME/.kube/ca.crt
           chmod 600 $HOME/.kube/ca.crt
           
           export KUBECONFIG=$HOME/.kube/config  # Explicitly set kubeconfig
