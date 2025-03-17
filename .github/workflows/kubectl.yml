@@ -38,11 +38,11 @@ jobs:
           echo "${{ secrets.KUBECONFIG_BASE64 }}" > $HOME/.kube/ca.crt
           chmod 600 $HOME/.kube/ca.crt
           
-          export KUBECONFIG=$HOME/config  # Explicitly set kubeconfig
+          export KUBECONFIG=$GITHUB_WORKSPACE/config  # Explicitly set kubeconfig
 
           # ✅ Debug: Print Kubeconfig Contents
           echo "🔍 Debug: Kubeconfig File Contents:"
-          cat $HOME/config
+          cat $GITHUB_WORKSPACE/config
 
           # ✅ Debug: Show available contexts
           echo "🔍 Debug: Available Kubernetes Contexts:"
@@ -53,20 +53,20 @@ jobs:
           kubectl config current-context
 
         env:
-          KUBECONFIG: $HOME/config
+          KUBECONFIG: $GITHUB_WORKSPACE/config
 
       - name: ⚠️ Disable TLS Verification for Local Cluster
         run: |
-          export KUBECONFIG=$HOME/config
+          export KUBECONFIG=$GITHUB_WORKSPACE/config
           echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
           kubectl config set-cluster local --insecure-skip-tls-verify=true
 
         env:
-          KUBECONFIG: $HOME/config
+          KUBECONFIG: $GITHUB_WORKSPACE/config
 
       - name: 🚀 Verify Kubernetes Connection
         run: |
-          export KUBECONFIG=$HOME/config
+          export KUBECONFIG=$GITHUB_WORKSPACE/config
 
           # ✅ Debug: Check Cluster Info
           echo "🔍 Debug: Checking Cluster Info..."
@@ -81,4 +81,4 @@ jobs:
           kubectl get ns || echo "❌ Failed to fetch namespaces"
 
         env:
-          KUBECONFIG: $HOME/config
+          KUBECONFIG: $GITHUB_WORKSPACE/config
