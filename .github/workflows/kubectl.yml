@@ -84,6 +84,29 @@ jobs:
           IMAGE_NAME="ravi8881/${ORG_ID}-${SUB_ORG_ID}-${ENV_ID}-${GRAPH_ID}:${VERSION}"
           IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]' | tr -d ' ' | tr '/' '-')
 
+      - name: 🔄 Clone solr-docker repository with dynamic branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extract branch name from payload
+          BRANCH_NAME=$(jq -r '.data.organizationID' event_payload.json)
+
+          # Validate
+          if [[ -z "$BRANCH_NAME" ]]; then
+            echo "🚨 Error: branchName is missing in payload!"
+            exit 1
+          fi
+
+          echo "🔁 Cloning branch: $BRANCH_NAME"
+
+          # Clone the solr-docker repo with the provided branch
+          git clone --single-branch --branch "$BRANCH_NAME" \
+            https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/solr-docker.git solr-docker
+
+          # List contents
+          ls -la solr-docker
+
+
           # Log and Export Variables
           echo "🚀 Docker Image Name: $IMAGE_NAME"
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
