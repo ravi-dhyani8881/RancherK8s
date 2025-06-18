@@ -32,21 +32,21 @@ jobs:
           echo "📂 Listing all files in the repository:"
           ls -R  # List all files recursively
 
-      - name: 🔑 Configure Kubeconfig
-        run: |
-          mkdir -p $HOME/.kube  # Ensure .kube directory exists
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" > $HOME/.kube/ca.crt
-          chmod 600 $HOME/.kube/ca.crt
+     # - name: 🔑 Configure Kubeconfig
+     #   run: |
+     #     mkdir -p $HOME/.kube  # Ensure .kube directory exists
+     #     echo "${{ secrets.KUBECONFIG_BASE64 }}" > $HOME/.kube/ca.crt
+     #     chmod 600 $HOME/.kube/ca.crt
           
-          export KUBECONFIG=$GITHUB_WORKSPACE/config  # Explicitly set kubeconfig
+    #      export KUBECONFIG=$GITHUB_WORKSPACE/config  # Explicitly set kubeconfig
 
           # ✅ Debug: Print Kubeconfig Contents
-          echo "🔍 Debug: Kubeconfig File Contents:"
-          cat $GITHUB_WORKSPACE/config
+    #      echo "🔍 Debug: Kubeconfig File Contents:"
+    #      cat $GITHUB_WORKSPACE/config
 
       - name: ⚠️ Disable TLS Verification for Local Cluster
         run: |
-          export KUBECONFIG=$GITHUB_WORKSPACE/config
+          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
           echo "⚠️ Enabling --insecure-skip-tls-verify for 'local' cluster..."
           kubectl config set-cluster local --insecure-skip-tls-verify=true
 
