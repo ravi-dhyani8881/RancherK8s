@@ -129,6 +129,25 @@ jobs:
             echo "❌ Directory $TARGET_PATH does not exist!"
             exit 1
           fi
+      
+      - name: 🚀 Apply Kubernetes Manifests
+        run: |
+          SUB_ORG_ID=$(jq -r '.data.subOrganizationID' event_payload.json)
+          ENV_ID=$(jq -r '.data.enviromentID' event_payload.json)
+          GRAPH_ID=$(jq -r '.data.graphID' event_payload.json)
+
+          MANIFEST_DIR="solr-docker/$SUB_ORG_ID/$ENV_ID/$GRAPH_ID/kubernates"
+
+          echo "📂 Applying manifests from: $MANIFEST_DIR"
+
+          if [[ -d "$MANIFEST_DIR" ]]; then
+            kubectl apply -f "$MANIFEST_DIR/solr-deployment.yaml"
+            kubectl apply -f "$MANIFEST_DIR/solr-service.yaml"
+            kubectl apply -f "$MANIFEST_DIR/solr-ingress.yaml"
+          else
+            echo "❌ Manifest directory does not exist!"
+            exit 1
+          fi
 
 
           # Log and Export Variables
