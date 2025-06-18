@@ -106,6 +106,30 @@ jobs:
           # List contents
           ls -la solr-docker
 
+      - name: 📂 Navigate into dynamic subdirectory
+        run: |
+          SUB_ORG_ID=$(jq -r '.data.subOrganizationID' event_payload.json)
+          ENV_ID=$(jq -r '.data.enviromentID' event_payload.json)
+          GRAPH_ID=$(jq -r '.data.graphID' event_payload.json)
+
+          # Validate
+          if [[ -z "$SUB_ORG_ID" || -z "$ENV_ID" || -z "$GRAPH_ID" ]]; then
+            echo "🚨 Error: One or more folder names are missing!"
+            exit 1
+          fi
+
+          TARGET_PATH="solr-docker/$SUB_ORG_ID/$ENV_ID/$GRAPH_ID"
+
+          echo "📁 Changing into: $TARGET_PATH"
+
+          if [[ -d "$TARGET_PATH" ]]; then
+            cd "$TARGET_PATH"
+            ls -la
+          else
+            echo "❌ Directory $TARGET_PATH does not exist!"
+            exit 1
+          fi
+
 
           # Log and Export Variables
           echo "🚀 Docker Image Name: $IMAGE_NAME"
