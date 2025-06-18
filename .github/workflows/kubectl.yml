@@ -68,11 +68,11 @@ jobs:
       - name: Extract metadata for Docker image name
         run: |
           # Extract values from JSON
-          ORG_ID=$(jq -r '.organizationID' event_payload.json)
-          SUB_ORG_ID=$(jq -r '.subOrganizationID' event_payload.json)
-          ENV_ID=$(jq -r '.enviromentID' event_payload.json)
-          GRAPH_ID=$(jq -r '.graphID' event_payload.json)
-          VERSION=$(jq -r '.version' event_payload.json)
+          ORG_ID=$(jq -r '.data.organizationID' event_payload.json)
+          SUB_ORG_ID=$(jq -r '.data.subOrganizationID' event_payload.json)
+          ENV_ID=$(jq -r '.data.enviromentID' event_payload.json)
+          GRAPH_ID=$(jq -r '.data.graphID' event_payload.json)
+          VERSION=$(jq -r '.data.version' event_payload.json)
 
           # Validate extracted values
           if [[ -z "$ORG_ID" || -z "$SUB_ORG_ID" || -z "$ENV_ID" || -z "$GRAPH_ID" || -z "$VERSION" ]]; then
