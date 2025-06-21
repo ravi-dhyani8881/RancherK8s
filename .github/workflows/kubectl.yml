@@ -155,3 +155,34 @@ jobs:
           # Log and Export Variables
           echo "🚀 Docker Image Name: $IMAGE_NAME"
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+
+      - name: 🧬 Clone graphql repository and deploy Spring Boot app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
+      
+          echo "📥 Cloning graphql repo (default main branch)..."
+          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/graphql.git graphql
+      
+          echo "📂 Contents of graphql repo:"
+          find graphql
+      
+          PROJECT_NAME=$(jq -r '.data.projectName' event_payload.json)
+          MANIFEST_PATH="graphql/$PROJECT_NAME/kubernates"
+      
+          echo "📁 Looking for manifests in: $MANIFEST_PATH"
+      
+          if [[ -d "$MANIFEST_PATH" ]]; then
+            echo "📄 Files in $MANIFEST_PATH:"
+            ls -l "$MANIFEST_PATH"
+      
+            kubectl apply -f "$MANIFEST_PATH/springboot-deployment.yaml"
+            kubectl apply -f "$MANIFEST_PATH/springboot-service.yaml"
+            kubectl apply -f "$MANIFEST_PATH/springboot-ingress.yaml"
+          else
+            echo "❌ Directory $MANIFEST_PATH does not exist!"
+            exit 1
+          fi
+      
