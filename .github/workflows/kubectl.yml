@@ -198,7 +198,7 @@ jobs:
           echo "📂 Contents of rest repo:"
           ls -lthr
       
-          MANIFEST_PATH="rest/kubernates"
+          MANIFEST_PATH="main/kubernates"
       
           echo "📁 Looking for manifests in: $MANIFEST_PATH"
       
