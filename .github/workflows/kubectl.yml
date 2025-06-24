@@ -157,7 +157,7 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
 
-      - name: 🧬 Clone graphql repository and deploy Spring Boot app
+      - name: 🧬 Clone graphql repository and deploy Spring Boot Graphql app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -186,3 +186,31 @@ jobs:
             exit 1
           fi
       
+      - name: 🧬 Clone rest repository and deploy Spring Boot rest app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
+      
+          echo "📥 Cloning graphql repo (default main branch)..."
+          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/rest.git main
+      
+          echo "📂 Contents of rest repo:"
+          find rest
+      
+          MANIFEST_PATH="rest/kubernates"
+      
+          echo "📁 Looking for manifests in: $MANIFEST_PATH"
+      
+          if [[ -d "$MANIFEST_PATH" ]]; then
+            echo "📄 Files in $MANIFEST_PATH:"
+            ls -l "$MANIFEST_PATH"
+      
+            kubectl apply -f "$MANIFEST_PATH/rest-deployment.yaml"
+            kubectl apply -f "$MANIFEST_PATH/rest-service.yaml"
+            kubectl apply -f "$MANIFEST_PATH/rest-ingress.yaml"
+          else
+            echo "❌ Directory $MANIFEST_PATH does not exist!"
+            exit 1
+          fi
+
