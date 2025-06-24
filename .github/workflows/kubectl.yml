@@ -196,7 +196,7 @@ jobs:
           git clone https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/rest.git main
       
           echo "📂 Contents of rest repo:"
-          find rest
+          ls -lthr
       
           MANIFEST_PATH="rest/kubernates"
       
