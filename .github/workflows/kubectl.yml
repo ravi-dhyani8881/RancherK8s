@@ -108,6 +108,7 @@ jobs:
 
       - name: ✅ Ensure namespace exists from ORG_ID
         run: |
+          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
           ORG_ID=$(jq -r '.data.organizationID' event_payload.json)
           echo "Resolved ORG_ID: $ORG_ID"
       
