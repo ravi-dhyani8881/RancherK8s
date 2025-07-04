@@ -169,6 +169,36 @@ jobs:
           echo "🚀 Docker Image Name: $IMAGE_NAME"
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
+      - name: 🧬 Clone rest repository and deploy Spring Boot rest app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
+          BRANCH_NAME=$(jq -r '.data.organizationID' event_payload.json)
+          ORG_ID=$(jq -r '.data.organizationID' event_payload.json)
+      
+          echo "📥 Cloning graphql repo (default main branch)..."
+          git clone --single-branch --branch "$BRANCH_NAME" \
+          https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/rest.git $BRANCH_NAME
+      
+          echo "📂 Contents of rest repo:"
+          ls -lthr
+      
+          MANIFEST_PATH="$BRANCH_NAME/kubernates"
+      
+          echo "📁 Looking for manifests in: $MANIFEST_PATH"
+      
+          if [[ -d "$MANIFEST_PATH" ]]; then
+            echo "📄 Files in $MANIFEST_PATH:"
+            ls -l "$MANIFEST_PATH"
+      
+            kubectl apply -f "$MANIFEST_PATH/rest-deployment.yaml" -n "$ORG_ID"
+            kubectl apply -f "$MANIFEST_PATH/rest-service.yaml" -n "$ORG_ID"
+            kubectl apply -f "$MANIFEST_PATH/rest-ingress.yaml" -n "$ORG_ID"
+          else
+            echo "❌ Directory $MANIFEST_PATH does not exist!"
+            exit 1
+          fi
 
       - name: 🧬 Clone graphql repository and deploy Spring Boot Graphql app
         env:
@@ -199,31 +229,4 @@ jobs:
             exit 1
           fi
       
-      - name: 🧬 Clone rest repository and deploy Spring Boot rest app
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          export KUBECONFIG=$GITHUB_WORKSPACE/local.yaml
-      
-          echo "📥 Cloning graphql repo (default main branch)..."
-          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/rest.git main
-      
-          echo "📂 Contents of rest repo:"
-          ls -lthr
-      
-          MANIFEST_PATH="main/kubernates"
-      
-          echo "📁 Looking for manifests in: $MANIFEST_PATH"
-      
-          if [[ -d "$MANIFEST_PATH" ]]; then
-            echo "📄 Files in $MANIFEST_PATH:"
-            ls -l "$MANIFEST_PATH"
-      
-            kubectl apply -f "$MANIFEST_PATH/rest-deployment.yaml"
-            kubectl apply -f "$MANIFEST_PATH/rest-service.yaml"
-            kubectl apply -f "$MANIFEST_PATH/rest-ingress.yaml"
-          else
-            echo "❌ Directory $MANIFEST_PATH does not exist!"
-            exit 1
-          fi
 
