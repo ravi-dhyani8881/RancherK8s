@@ -177,6 +177,10 @@ jobs:
           BRANCH_NAME=$(jq -r '.data.organizationID' event_payload.json)
           ORG_ID=$(jq -r '.data.organizationID' event_payload.json)
           Project_Name=$(jq -r '.data.projectName' event_payload.json)
+          Enviroment_ID=$(jq -r '.data.enviromentID' event_payload.json)
+          Sub_Organization_ID=$(jq -r '.data.subOrganizationID' event_payload.json)
+          graphID=$(jq -r '.data.graphID' event_payload.json)
+          
           echo "📥 Cloning graphql repo (default main branch)..."
           git clone --single-branch --branch "$BRANCH_NAME" \
           https://x-access-token:${GITHUB_TOKEN}@github.com/ravi-dhyani8881/rest.git $BRANCH_NAME
@@ -184,7 +188,7 @@ jobs:
           echo "📂 Contents of rest repo:"
           ls -lthr
       
-          MANIFEST_PATH="$BRANCH_NAME/$Project_Name/kubernates"
+          MANIFEST_PATH="$BRANCH_NAME/$Sub_Organization_ID/$Enviroment_ID/$graphID/$Project_Name/kubernates"
       
           echo "📁 Looking for manifests in: $MANIFEST_PATH"
       
