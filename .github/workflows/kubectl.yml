@@ -156,6 +156,8 @@ jobs:
           echo "📂 Applying manifests from: $MANIFEST_DIR"
 
           if [[ -d "$MANIFEST_DIR" ]]; then
+            kubectl apply -f "$MANIFEST_DIR/pv.yaml"
+            kubectl apply -f "$MANIFEST_DIR/pvc.yaml"
             kubectl apply -f "$MANIFEST_DIR/solr-deployment.yaml"
             kubectl apply -f "$MANIFEST_DIR/solr-service.yaml"
             kubectl apply -f "$MANIFEST_DIR/solr-ingress.yaml"
