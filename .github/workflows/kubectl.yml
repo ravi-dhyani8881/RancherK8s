@@ -250,7 +250,7 @@ jobs:
             "ID": "${ID}",
             "isDeployed": { "set": "true" },
             "graphUrl": { "set": "https://chief-snake-exciting.ngrok-free.app/graph/graphiql?path=/graphql" },
-            "restUrl": { "set": "https://chief-snake-exciting.ngrok-free.app/graph/graphiql?path=/graphql" }  
+            "restUrl": { "set": "https://chief-snake-exciting.ngrok-free.app/febe/v3/api-docs" }  
           }
           EOF      
 
