@@ -3,7 +3,7 @@ kind: Config
 clusters:
 - name: "local"
   cluster:
-    server: "https://st3fngrwx650.share.zrok.io/k8s/clusters/local"
+    server: "https://ehggc6ejja4f.share.zrok.io/k8s/clusters/local"
     certificate-authority-data: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ2VENDQ\
       VdPZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQkdNUnd3R2dZRFZRUUtFeE5rZVc1aGJXbGoKY\
       kdsemRHVnVaWEl0YjNKbk1TWXdKQVlEVlFRRERCMWtlVzVoYldsamJHbHpkR1Z1WlhJdFkyRkFNV\
