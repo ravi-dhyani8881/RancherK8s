@@ -239,18 +239,25 @@ jobs:
       - name: Call remote API after build is complete
         if: ${{ success() }}
         run: |
+          set -x  # debug mode
           ID=$(jq -r '.data.ID' event_payload.json)
-      
-          curl --location --request PUT 'https://chief-snake-exciting.ngrok-free.app/febe/graphVersions/updateContent' \
-            --header 'Content-Type: application/json' \
-            --header 'X-API-Key: 4dec1823-fde8-45c6-8413-8aa8eae04e56' \
-            --header 'X-USER-ID: 7832be86-6fc6-4234-a0bf-46403ac7ada9' \        
-            --data @- <<EOF
+          DOMAIN=$(jq -r '.data.domain' event_payload.json) # assuming your payload has "domain"
+          
+          cat > payload.json <<EOF
           {
             "ID": "${ID}",
-            "domain": { "set": "${domain}" },
+            "domain": { "set": "${DOMAIN}" },
             "isDeployed": { "set": true },
             "graphUrl": { "set": "https://chief-snake-exciting.ngrok-free.app/graph/graphiql?path=/graphql" },
             "restUrl": { "set": "https://chief-snake-exciting.ngrok-free.app/febe/v3/api-docs" }
           }
           EOF
+
+          echo "DEBUG payload.json:"
+          cat payload.json | jq .
+
+          curl --location --request PUT 'https://chief-snake-exciting.ngrok-free.app/febe/graphVersions/updateContent' \
+            --header 'Content-Type: application/json' \
+            --header 'X-API-Key: 4dec1823-fde8-45c6-8413-8aa8eae04e56' \
+            --header 'X-USER-ID: 7832be86-6fc6-4234-a0bf-46403ac7ada9' \
+            --data @payload.json
